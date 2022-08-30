@@ -30,45 +30,44 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        Location()
+    }
 
-
+    fun Location() {
+        Log.e(javaClass.simpleName, "Location start : ",)
         lifecycleScope.launchWhenCreated {
-            while (true) {
-                count++
+            count++
+            val fusedLocationClient: FusedLocationProviderClient =
+                LocationServices.getFusedLocationProviderClient(application)
 
-                val fusedLocationClient: FusedLocationProviderClient =
-                    LocationServices.getFusedLocationProviderClient(application)
-
-                if (ActivityCompat.checkSelfPermission(
-                        application,
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                    ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                        application,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    return@launchWhenCreated
-                }
-
-
-                fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, )
-                fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                    if (location != null) {
-                        val latitude = location.latitude
-                        val longitude = location.longitude
-
-                        binding.text.text =
-                            "GPS Location Latitude: $latitude, Longitude: $longitude, Couint : $count"
-
-                        Log.e(
-                            javaClass.simpleName,
-                            "GPS Location Latitude: $latitude" +
-                                    ", Longitude: $longitude",
-                        )
-                    }
-                }
-                delay(1500L)
+            if (ActivityCompat.checkSelfPermission(
+                    application,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    application,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                Log.e(javaClass.simpleName, "return : ",)
+                return@launchWhenCreated
             }
+
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                if (location != null) {
+                    val latitude = location.latitude
+                    val longitude = location.longitude
+
+                    binding.text.text =
+                        "GPS Location Latitude: $latitude, Longitude: $longitude, Couint : $count"
+
+                    Log.e(
+                        javaClass.simpleName,
+                        "GPS Location Latitude: $latitude" +
+                                ", Longitude: $longitude",
+                    )
+                }
+            }
+            delay(1500L)
         }
     }
 
